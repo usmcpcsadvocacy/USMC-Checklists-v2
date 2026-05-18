@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOW Accompanied CONUS to CONUS Checklist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            background: linear-gradient(135deg, #001f3f 0%, #003d5c 100%);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        header h1 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .progress-container {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 24px;
+            background-color: rgba(255,255,255,0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 5px;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .reset-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            background-color: #c82333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .section {
+            background: white;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            background-color: #001f3f;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+
+        .section-header.complete {
+            background-color: #28a745;
+        }
+
+        .section-progress {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .section-progress-bar {
+            width: 80px;
+            height: 6px;
+            background-color: rgba(255,255,255,0.3);
+            border-radius: 3px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .section-progress-fill {
+            height: 100%;
+            background-color: #28a745;
+            transition: width 0.3s ease;
+        }
+
+        .subsection {
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 0;
+        }
+
+        .subsection-header {
+            background-color: #555;
+            color: white;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .checklist-item {
+            display: grid;
+            grid-template-columns: 50px 1fr auto;
+            align-items: flex-start;
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            gap: 15px;
+            background-color: white;
+        }
+
+        .checklist-item:nth-child(odd) {
+            background-color: white;
+        }
+
+        .checklist-item:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .checklist-item.complete {
+            background-color: #e8f5e9;
+        }
+
+        .checklist-item.complete:nth-child(even) {
+            background-color: #e8f5e9;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-custom {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ddd;
+            border-radius: 3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .checkbox-custom:hover {
+            border-color: #001f3f;
+        }
+
+        .checkbox-custom.checked {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+            font-weight: bold;
+        }
+
+        input[type="checkbox"] {
+            display: none;
+        }
+
+        .item-content {
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .item-label {
+            font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+            color: #333;
+        }
+
+        .checklist-item.complete .item-label {
+            text-decoration: line-through;
+            color: #666;
+        }
+
+        .item-description {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .item-description ul,
+        .item-description ol {
+            margin-left: 20px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .item-description li {
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .item-tip {
+            font-style: italic;
+            color: #888;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 20px;
+            }
+
+            .header-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .checklist-item {
+                grid-template-columns: 50px 1fr;
+                gap: 12px;
+            }
+
+            .section-header {
+                font-size: 16px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .section-progress {
+                width: 100%;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>DOW Accompanied CONUS to CONUS Checklist</h1>
+        <div class="header-controls">
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="overallProgress" style="width: 0%">
+                        <span id="progressText"></span>
+                    </div>
+                </div>
+                <div class="progress-text"><span id="progressCount">0 of 0</span> Complete</div>
+            </div>
+            <button class="reset-btn" id="resetBtn">Reset All</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- SECTION 1: First Steps After Receiving Orders -->
+        <div class="section">
+            <div class="section-header" id="section-0-header">
+                I. First Steps After Receiving Orders
+                <div class="section-progress">
+                    <div class="section-progress-bar">
+                        <div class="section-progress-fill" id="section-0-fill" style="width: 0%"></div>
+                    </div>
+                    <span id="section-0-count">0/0</span>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-header">Getting Organized</div>
+                <div class="checklist-item" data-section="0" data-item="0">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-0-0"></div>
+                        <input type="checkbox" id="input-0-0">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-0-0">Grab a Calendar & Get Organized</label>
+                        <div class="item-description">
+                            Create a rough timeline for your move.
+                            <ul>
+                                <li>Check the NLT (No Later Than) date on your orders and work backwards. Outline your preferred pack-out/pick-up dates, route, or flight dates along with alternative dates. Use one calendar as a central location for all things PCS-related.</li>
+                                <li>If you opted for a PPM, determine how much lead time you need to pack; or if you will hire packers.</li>
+                                <li>If you've opted for a GPM, you must decide on a "7-day scheduling window" in which the TSP will arrange to pick up your shipment.</li>
+                                <li>Your "Move Date" is your "Pick Up Date" — the date you would ideally like everything loaded. Choose a 7-day window. Enter the last day into DPS and the window will auto-populate.</li>
+                                <li>Pack Dates happen in the days immediately preceding your Pick Up Date — outside your 7-day spread but not on weekends or holidays without your permission.</li>
+                            </ul>
+                            Example: Move Date = Apr 24 → DPS auto-populates Apr 18–24. TSP choosing Apr 18 pickup means pack days may be Apr 13, 14 & 17.
+                        </div>
+                        <div class="item-tip">Tip: Once your shipment is awarded in DPS, the TSP must contact you within 3 days to confirm a pick-up date.</div>
+                        <div class="item-tip">* For parents of school-age children: Confirm early withdrawal/late enrollment dates with current and prospective schools when choosing move dates.</div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="0" data-item="1">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-0-1"></div>
+                        <input type="checkbox" id="input-0-1">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-0-1">Submit your Housing Application</label>
+                        <div class="item-description">
+                            Apply for base housing even if you intend to live off base. Use the <a href="https://www.housing.af.mil/" target="_blank">Installation Search</a> to find your local installation housing page.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="0" data-item="2">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-0-2"></div>
+                        <input type="checkbox" id="input-0-2">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-0-2">Create a "Move Binder" with important documents</label>
+                        <div class="item-description">
+                            Create a binder with all of your important documents in one place.
+                            <ul>
+                                <li><strong>Military:</strong> copies of orders, detaching endorsement, etc.</li>
+                                <li><strong>Personal:</strong> Social Security cards, medical/immunization/dental records, birth/marriage certificates, school records/transcripts/IEPs.</li>
+                                <li><strong>Move paperwork:</strong> TSP inventory sheets, important receipts, vehicle storage paperwork, TLF (hotel) info, important contacts.</li>
+                                <li><strong>Other:</strong> EFMP paperwork, college transcripts/licensure, naturalization certificates, divorce/adoption/guardianship/custody documents.</li>
+                            </ul>
+                        </div>
+                        <div class="item-tip">Tip: Anything you would not want lost in the move should be hand-carried with you!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: The Earlier, The Better (180–90 Days Out) -->
+        <div class="section">
+            <div class="section-header" id="section-1-header">
+                II. The Earlier, The Better (180–90 Days Out)
+                <div class="section-progress">
+                    <div class="section-progress-bar">
+                        <div class="section-progress-fill" id="section-1-fill" style="width: 0%"></div>
+                    </div>
+                    <span id="section-1-count">0/0</span>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-header">Weight and Entitlements</div>
+                <div class="checklist-item" data-section="1" data-item="0">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-1-0"></div>
+                        <input type="checkbox" id="input-1-0">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-1-0">Understand your HHG weight</label>
+                        <div class="item-description">
+                            It is crucial the service member understands the total weight of HHG they are authorized. Entitlements can be verified in the DTR IV "It's Your Move" on page 5. Pro Gear does not count against your total weight allowance. Net weight limit is 2,000 lbs. Active duty service members may request an additional 500 lbs for Spouse Pro Gear, which includes items required for employment and homeschool materials. All Pro Gear requests MUST be submitted to the local PPO BEFORE the move. Gun safes (&lt;500 lbs) are authorized to ship in addition to your authorized weight, not to exceed 18,000 lbs. Must be shipped empty.
+                        </div>
+                        <div class="item-tip">Note: O6 and above must request additional weight allowance from their local TO.</div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="1" data-item="1">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-1-1"></div>
+                        <input type="checkbox" id="input-1-1">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-1-1">Decide on a PPM or GPM, or partial PPM</label>
+                        <div class="item-description">
+                            <ul>
+                                <li><strong>Full PPM:</strong> You control your move and are eligible for 100% of the Government Constructed Cost (GCC).</li>
+                                <li><strong>GPM:</strong> The government handles packing, loading, shipping, unloading, and unpacking. The member is responsible for understand their responsibilities found in the DTR. (JTR 051501)</li>
+                                <li><strong>Partial PPM:</strong> Ship the majority via GPM and privately transport higher-value items.</li>
+                                <li><strong>Small Package PPM:</strong> Ship smaller necessity items in an expedited manner.</li>
+                            </ul>
+                            See Attachments A and/or B at the end of this checklist based on your chosen shipment method.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="1" data-item="2">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-1-2"></div>
+                        <input type="checkbox" id="input-1-2">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-1-2">Prepare to schedule your shipments</label>
+                        <div class="item-description">
+                            As soon as you receive your orders, start with PPO for HHG applications to lock in pack-out and pick-up dates.
+                            <ul>
+                                <li>Use the <a href="https://www.move.mil/" target="_blank">Installation Search</a> option to find your nearest Personal Property Office</li>
+                                <li>If this is your first time moving, contact your local PPO first to receive instructions to create an account.</li>
+                            </ul>
+                        </div>
+                        <div class="item-tip">NEW (April 2026): Homeschooling materials may now be included as PBP&E (Pro Gear) — see JTR Appendix A.</div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="1" data-item="3">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-1-3"></div>
+                        <input type="checkbox" id="input-1-3">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-1-3">Schedule your HHG shipments in DPS</label>
+                        <div class="item-description">
+                            Log into <a href="https://dps.move.mil/" target="_blank">DPS</a> to schedule your shipments. Have the following ready:
+                            <ul>
+                                <li>Contact info, estimated weight, pick-up & delivery locations and dates (no weekends or holidays), and any special items/PBP&E (Pro Gear).</li>
+                            </ul>
+                            If you don't know your exact delivery address, use your new duty station (e.g., Camp Pendleton, CA) and update once you arrive. If completing a PPM, you will select HHG then toggle "yes" when it prompts if you are conducting a PPM. Completing this step will generate your DD Forms. Review first, then sign. Contact your local PPO with any questions.
+                        </div>
+                        <div class="item-tip">Tip: If you don't know your exact delivery address, use your new duty station (e.g., Camp Pendleton, CA) and update once you arrive.</div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="1" data-item="4">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-1-4"></div>
+                        <input type="checkbox" id="input-1-4">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-1-4">Decide on Transportation options</label>
+                        <div class="item-description">
+                            Make a plan for your vehicles and dependents. Transportation options (JTR 050101):
+                            <ol>
+                                <li>Government transportation</li>
+                                <li>Government-procured commercial transportation (e.g., flight)</li>
+                                <li>Personally procured commercial transportation (e.g., rental car)</li>
+                                <li>Privately owned transportation</li>
+                                <li>Mixed Mode transportation (more than one mode)</li>
+                            </ol>
+                        </div>
+                        <div class="item-tip">Tip: For families with 2 POVs, check JTR 052902 for "drive one, ship one" reimbursement options.</div>
+                        <div class="item-tip">Discuss your plan with your local IPAC before making arrangements.</div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="1" data-item="5">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-1-5"></div>
+                        <input type="checkbox" id="input-1-5">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-1-5">Map your route</label>
+                        <div class="item-description">
+                            For trips over 400 miles, divide the official distance by 350 to determine authorized travel days. If the remainder is 51 or more, one additional travel day is allowed (JTR 050205).
+                            <p style="margin-top: 10px;">Example: 2,400 miles ÷ 350 = 6 days + 300-mile remainder (300 > 51) = 7 travel days.</p>
+                            For unique dependent travel situations, visit JTR 0504.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="1" data-item="6">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-1-6"></div>
+                        <input type="checkbox" id="input-1-6">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-1-6">Create a budget</label>
+                        <div class="item-description">
+                            Come up with a spending plan. There will be some up-front costs that will be reimbursed later, but also plan for start-up expenses once you arrive (pantry, cleaning supplies, utilities). Do not forget to request Dislocation Allowance (DLA) on your travel voucher once your PCS is complete.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="1" data-item="7">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-1-7"></div>
+                        <input type="checkbox" id="input-1-7">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-1-7">Entitlement Questions</label>
+                        <div class="item-description">
+                            Know your entitlements — call or visit your local finance office:
+                            <ul>
+                                <li><strong>TLE (Temporary Lodging Expense):</strong> Authorized 21 days for CONUS-to-CONUS moves. Can be split between losing and gaining PDS.</li>
+                                <li><strong>DLA (Dislocation Allowance):</strong> Partially reimburses for relocation expenses (typically reimbursed upon check-in once travel claim is completed).</li>
+                                <li><strong>Per Diem:</strong> Flat rate for each day of travel. SM may not receive both per diem and TLE for the same day.</li>
+                                <li><strong>BAH:</strong> Kicks in once the service member checks in at the new duty station.</li>
+                                <li><strong>GTCC:</strong> Know your limit. Ask your S-1/ODTA if you need to raise your limit. Ensure it is activated and in mission-critical status prior to departure.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="1" data-item="8">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-1-8"></div>
+                        <input type="checkbox" id="input-1-8">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-1-8">Start sorting your Household Items</label>
+                        <div class="item-description">
+                            Decide what you will ship, hand carry, and what you will purge. Set aside items not authorized to be moved or stored. See Appendix A-I "Hazardous Materials". Your TSP may have additional restrictions — discuss during your Pre-Move Survey.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="1" data-item="9">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-1-9"></div>
+                        <input type="checkbox" id="input-1-9">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-1-9">Renew your Driver's License (if applicable)</label>
+                        <div class="item-description">
+                            If you plan to maintain residency at your current PDS, ensure your DL is not due to expire. Check laws at both the new and old PDS. Note: If using your driver's license to access a military installation or flying, a Real ID is required.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="1" data-item="10">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-1-10"></div>
+                        <input type="checkbox" id="input-1-10">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-1-10">Renew your Military ID (if applicable)</label>
+                        <div class="item-description">
+                            Dependents will need the active duty service member present to renew a military ID. Dependents without a Sponsor present must have a valid DD Form 1172-2 signed by the Sponsor and a Verifying Official (valid 90 days from signature). Power of Attorney accepted if it states DEERS or Military ID card related transactions. See <a href="https://www.militaryonesource.mil/" target="_blank">Military One Source</a> for potentially renewing online.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="1" data-item="11">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-1-11"></div>
+                        <input type="checkbox" id="input-1-11">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-1-11">Make hotel reservations at new/old PDS</label>
+                        <div class="item-description">
+                            Check with base accommodations first and obtain a certificate of non-availability if applicable. If you require a pet-friendly hotel, contact the hotel directly for policy and reservation.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="1" data-item="12">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-1-12"></div>
+                        <input type="checkbox" id="input-1-12">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-1-12">Notify your landlord or prepare to sell/rent your home</label>
+                        <div class="item-description">
+                            Once you know your estimated moving dates, make a plan for your current home. Notify your landlord or make plans to sell/find renters if living in off-base housing. Remember: the Servicemember Civil Relief Act may apply.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: The Earlier, The Better (90–30 Days Out) -->
+        <div class="section">
+            <div class="section-header" id="section-2-header">
+                III. The Earlier, The Better (90–30 Days Out)
+                <div class="section-progress">
+                    <div class="section-progress-bar">
+                        <div class="section-progress-fill" id="section-2-fill" style="width: 0%"></div>
+                    </div>
+                    <span id="section-2-count">0/0</span>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-header">Planning and Logistics</div>
+                <div class="checklist-item" data-section="2" data-item="0">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-2-0"></div>
+                        <input type="checkbox" id="input-2-0">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-2-0">Plan your pet's travel</label>
+                        <div class="item-description">
+                            Per JTR 050107, reimbursement is issued for relocation costs of ONE household pet (cat or dog). Moving within CONUS is limited to $550 for one pet per set of orders.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="2" data-item="1">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-2-1"></div>
+                        <input type="checkbox" id="input-2-1">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-2-1">Collect Medical / Dental Records</label>
+                        <div class="item-description">
+                            Request copies of pertinent immunization, dental, and other medical records — or request your doctor's office send them directly to your new MTF/PCM. This process can take time, so notify providers well in advance.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="2" data-item="2">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-2-2"></div>
+                        <input type="checkbox" id="input-2-2">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-2-2">Contact the School Liaison (if applicable)</label>
+                        <div class="item-description">
+                            Locate and contact the School Liaison for school registration information at your new duty station. Your current duty station can also provide assistance.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="2" data-item="3">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-2-3"></div>
+                        <input type="checkbox" id="input-2-3">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-2-3">Contact the Child Development Center (CDC) (if applicable)</label>
+                        <div class="item-description">
+                            CDCs often have waitlists. Find the CDC at your new duty station. Visit <a href="https://www.militarychildcare.com/" target="_blank">www.militarychildcare.com</a> to add your child(ren) to a waitlist. Subsidies are available in some areas — visit <a href="https://www.childcareaware.org/" target="_blank">Childcare Aware</a> for more information. Be aware of the Pilot Program to Reimburse Child Care Provider Transportation Costs Due to a PCS (JTR 050108).
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: The Last 30 Days Prior to Leaving Old Duty Station -->
+        <div class="section">
+            <div class="section-header" id="section-3-header">
+                IV. The Last 30 Days Prior to Leaving Old Duty Station
+                <div class="section-progress">
+                    <div class="section-progress-bar">
+                        <div class="section-progress-fill" id="section-3-fill" style="width: 0%"></div>
+                    </div>
+                    <span id="section-3-count">0/0</span>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-header">Final Preparations</div>
+                <div class="checklist-item" data-section="3" data-item="0">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-3-0"></div>
+                        <input type="checkbox" id="input-3-0">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-3-0">Notify credit card companies / banks</label>
+                        <div class="item-description">
+                            Notify your credit card companies and banks that you are moving. Pay any outstanding bills or set up autopay while you are in transit to your new duty station.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="3" data-item="1">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-3-1"></div>
+                        <input type="checkbox" id="input-3-1">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-3-1">Submit Change of Address</label>
+                        <div class="item-description">
+                            It can take 7–10 business days to forward a mailing address through USPS. If you do not have a new address yet, consider placing a hold on your mail or forwarding to a family member temporarily.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="3" data-item="2">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-3-2"></div>
+                        <input type="checkbox" id="input-3-2">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-3-2">Share your forwarding address with providers</label>
+                        <div class="item-description">
+                            Update your new address with healthcare providers and any other local services you utilize as soon as you have it so that outstanding bills can be forwarded directly to you.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="3" data-item="3">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-3-3"></div>
+                        <input type="checkbox" id="input-3-3">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-3-3">Cancel utilities / delivery services</label>
+                        <div class="item-description">
+                            Check any subscriptions, utilities, or delivery services you may have and cancel or update your address.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="3" data-item="4">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-3-4"></div>
+                        <input type="checkbox" id="input-3-4">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-3-4">Double-check GTCC status</label>
+                        <div class="item-description">
+                            Check with your S1/Admin/ODTA to make sure your GTCC is activated and in "mission critical" status prior to travel.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="3" data-item="5">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-3-5"></div>
+                        <input type="checkbox" id="input-3-5">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-3-5">Tricare</label>
+                        <div class="item-description">
+                            Stay enrolled in your current TRICARE plan. You may need to transfer regions after you arrive. Fill or refill any prescriptions to carry you through your relocation period.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="3" data-item="6">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-3-6"></div>
+                        <input type="checkbox" id="input-3-6">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-3-6">Separate suitcases and items you will be traveling with</label>
+                        <div class="item-description">
+                            <ul>
+                                <li>Consider blocking off a section of your home clearly labeled "DO NOT MOVE."</li>
+                                <li>Set aside suitcases (for travel), trash, and donations.</li>
+                                <li>Keep passports, move binder, purses, etc. out of reach of movers — consider placing them in your car.</li>
+                                <li>Don't forget medications, along with refills to get you through the relocation process.</li>
+                                <li>Start setting aside snacks and entertainment, especially if traveling with children!</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="3" data-item="7">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-3-7"></div>
+                        <input type="checkbox" id="input-3-7">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-3-7">Final housing cleaning and inspection</label>
+                        <div class="item-description">
+                            Clean your home and ensure none of your personal belongings are left behind. Complete your home inspection (if applicable), turn in the keys, and say goodbye to your neighbors!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 5: Travel to your New PDS -->
+        <div class="section">
+            <div class="section-header" id="section-4-header">
+                V. Travel to your New PDS
+                <div class="section-progress">
+                    <div class="section-progress-bar">
+                        <div class="section-progress-fill" id="section-4-fill" style="width: 0%"></div>
+                    </div>
+                    <span id="section-4-count">0/0</span>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-header">During Transit</div>
+                <div class="checklist-item" data-section="4" data-item="0">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-4-0"></div>
+                        <input type="checkbox" id="input-4-0">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-4-0">Keep receipts</label>
+                        <div class="item-description">
+                            Keep copies of all receipts for gas, hotels, and food during your travel. Receipts may need to be submitted if utilizing the GTCC during travel days.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="4" data-item="1">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-4-1"></div>
+                        <input type="checkbox" id="input-4-1">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-4-1">Track local weather</label>
+                        <div class="item-description">
+                            Weather can change in a moment's notice — track severe weather alerts along your route. Have a plan if severe weather hits and know where you should go.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 6: After Arriving to your New PDS -->
+        <div class="section">
+            <div class="section-header" id="section-5-header">
+                VI. After Arriving to your New PDS
+                <div class="section-progress">
+                    <div class="section-progress-bar">
+                        <div class="section-progress-fill" id="section-5-fill" style="width: 0%"></div>
+                    </div>
+                    <span id="section-5-count">0/0</span>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-header">Check-in and Arrival</div>
+                <div class="checklist-item" data-section="5" data-item="0">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-5-0"></div>
+                        <input type="checkbox" id="input-5-0">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-5-0">Check-in with Unit</label>
+                        <div class="item-description">
+                            Your sponsor should assist with the check-in process and introduce you to your gaining command.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="5" data-item="1">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-5-1"></div>
+                        <input type="checkbox" id="input-5-1">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-5-1">Tricare</label>
+                        <div class="item-description">
+                            Update your TRICARE region if needed. This must be completed within 90 days as a qualifying life event. Learn more at <a href="https://www.tricare.mil/" target="_blank">Tricare Life Events</a>.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="5" data-item="2">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-5-2"></div>
+                        <input type="checkbox" id="input-5-2">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-5-2">Finalize housing</label>
+                        <div class="item-description">
+                            If utilizing base housing, report to the family housing office for assignment.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="5" data-item="3">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-5-3"></div>
+                        <input type="checkbox" id="input-5-3">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-5-3">Complete Travel Voucher</label>
+                        <div class="item-description">
+                            This process vary per branch; speak to your finance / admin office for further guidance.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="5" data-item="4">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-5-4"></div>
+                        <input type="checkbox" id="input-5-4">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-5-4">Follow-up with pay and entitlement payouts</label>
+                        <div class="item-description">
+                            Check weekly on MOL travel tab for status updates on the travel voucher. Ensure all entitlements were paid at the correct rate.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 7: Government Procured Move (GPM) Guide -->
+        <div class="section">
+            <div class="section-header" id="section-6-header">
+                VII. Government Procured Move (GPM) Guide
+                <div class="section-progress">
+                    <div class="section-progress-bar">
+                        <div class="section-progress-fill" id="section-6-fill" style="width: 0%"></div>
+                    </div>
+                    <span id="section-6-count">0/0</span>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-header">Prepping for Packout / Pickup</div>
+                <div class="checklist-item" data-section="6" data-item="0">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-6-0"></div>
+                        <input type="checkbox" id="input-6-0">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-6-0">Confirm dates with your TSP</label>
+                        <div class="item-description">
+                            Contact your TSP to confirm all dates. Pack-out dates are the days leading up to your pickup date (varies by estimated weight). The pick-up date is the day your items are placed on the truck.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="6" data-item="1">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-6-1"></div>
+                        <input type="checkbox" id="input-6-1">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-6-1">Complete your Pre-Move Survey</label>
+                        <div class="item-description">
+                            Call your TSP or PPO if you are within one week of moving day and have not had a Pre-Move Survey completed. The assigned TSP will contact you to schedule — usually done at your home or over the phone. They will estimate weight and identify special items entered in DPS.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="6" data-item="2">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-6-2"></div>
+                        <input type="checkbox" id="input-6-2">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-6-2">Read Tips from Military One Source & PPA</label>
+                        <div class="item-description">
+                            Read <a href="https://www.militaryonesource.mil/" target="_blank">PPA: Moving and Packing Tips</a>.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="6" data-item="3">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-6-3"></div>
+                        <input type="checkbox" id="input-6-3">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-6-3">Prepare household items / appliances and create an inventory</label>
+                        <div class="item-description">
+                            Drain lawnmower, tape remotes to electronics, remove all batteries, remove all items from walls (curtains, pictures, TVs), disassemble outdoor playsets, move items out of attic/crawl space, and ensure all appliances are disconnected.
+                            <ul>
+                                <li><strong>Create your own inventory:</strong> Start with your highest-value items. Keep all receipts, get appraisal records, and take photos/videos prior to packing. Video record electronics/appliances in working condition and photograph serial number plates.</li>
+                            </ul>
+                        </div>
+                        <div class="item-tip">Tip: Keep a copy of your inventory in your move binder.</div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="6" data-item="4">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-6-4"></div>
+                        <input type="checkbox" id="input-6-4">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-6-4">Know your Important Phone Numbers</label>
+                        <div class="item-description">
+                            <ul>
+                                <li><strong>PPO:</strong> Call for questions before your move, entitlement questions, scheduling counseling, issues with the moving company, date/location changes, or to postpone/cancel a shipment. Find your local PPO at <a href="https://www.move.mil/" target="_blank">PPA Customer Service Contacts</a>.</li>
+                                <li><strong>Quality Assurance (QA):</strong> Call for moving day issues.</li>
+                                <li><strong>Moving Company / TSP:</strong> Check DPS for contact info. Use for pre-move survey, coordinating delivery, date change requests, inconvenience claims, or loss/damage claims.</li>
+                                <li><strong>Origin JPPSO:</strong> Call for date/location changes, postpone/cancel a shipment, or request shipment status.</li>
+                                <li><strong>Personal Property Activity (PPA):</strong> Contact if unable to reach local PPO. Operates 24/7 during peak season.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="6" data-item="5">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-6-5"></div>
+                        <input type="checkbox" id="input-6-5">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-6-5">Prepare your specialty items</label>
+                        <div class="item-description">
+                            The TSP will provide info on preparing items needing special consideration. See DTR "It's Your Move" and <a href="https://www.move.mil/" target="_blank">PPA: Personal Property Entitlements</a> for full details.
+                            <ul>
+                                <li><strong>Lithium-Ion Batteries (as of May 2023):</strong> Restricted to &lt;100Wh per battery. All lithium batteries must be packaged and labeled separately. See Factsheet.</li>
+                                <li><strong>Pro Gear:</strong> Separate from HHG and identify as pro-gear so it is listed as such on the inventory.</li>
+                                <li><strong>Motorcycles:</strong> Can be shipped as a POV or as part of HHG. Check with TSP and DTR IV section G. Must drain fuel and disconnect battery.</li>
+                                <li><strong>Alcohol:</strong> Shipment of sealed alcohol is now authorized (MARADMIN 289/19). Subject to state laws per DTR IV K1 p.15 and 27 U.S.C. §122.</li>
+                                <li><strong>Weapons:</strong> Must comply with local/state laws and ATF regulations per DTR IV K1 p.17 and DTR IV Chapter 409. Ammunition shipment is NOT authorized.</li>
+                                <li><strong>Boats:</strong> Authorized but cost cannot exceed your maximum weight allowance per DTR IV K1 p.16 and DTR IV Ch.412. Boats ≤ 168"×82"×77" may ship with HHG. Larger boats ship via One-Time-Only rates.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-header">Packout / Pickup Days</div>
+                <div class="checklist-item" data-section="6" data-item="6">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-6-6"></div>
+                        <input type="checkbox" id="input-6-6">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-6-6">Moving day rights & responsibilities</label>
+                        <div class="item-description">
+                            Know your rights and responsibilities per DTR IV K1 Section X.
+                            <ul>
+                                <li>Your team may arrive between 8:00 AM – 5:00 PM on pack, pickup, and delivery dates. You are required to be at the residence during this time.</li>
+                                <li>Your team must finish by 5:00 PM, unless approved by the customer, then they may remain until 9:00 PM.</li>
+                                <li>You or your assigned representative must be present during the entire move process.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="6" data-item="7">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-6-7"></div>
+                        <input type="checkbox" id="input-6-7">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-6-7">Review Moving Day Tips</label>
+                        <div class="item-description">
+                            <ul>
+                                <li>Keep move binder, purses, medications, jewelry, and valuables locked away or with you at all times.</li>
+                                <li>Make a plan for small children and/or pets while movers are packing.</li>
+                                <li>It is not required to tip or feed the moving crew, but providing water/refreshments is a kind gesture.</li>
+                                <li>The driver is usually in charge. Talk with the driver first if issues arise. If unresolved, call your local PPO or QA.</li>
+                                <li>The moving company will create an inventory and put stickers on all boxes/larger items. They will indicate pre-existing damage. Check the condition codes. If you disagree, write it in the remarks section.</li>
+                                <li>Do not sign the inventory sheet until you understand and agree with everything listed.</li>
+                                <li>See more moving day tips from <a href="https://www.militaryonesource.mil/" target="_blank">Military One Source</a>.</li>
+                                <li><strong>Real Property Damage:</strong> If the TSP damages your residence, visit the claims factsheet and follow the steps under "Residential Damage Claims."</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-header">After Arrival at New Duty Station</div>
+                <div class="checklist-item" data-section="6" data-item="8">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-6-8"></div>
+                        <input type="checkbox" id="input-6-8">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-6-8">Accept your Personal Property Shipments (HHG)</label>
+                        <div class="item-description">
+                            Communicate your unpack preference with the TSP ahead of time or in DPS:
+                            <ol>
+                                <li><strong>Full unpack:</strong> Movers empty all boxes into specified rooms; on a flat surface. They are not required to organize or put items away. Include "FULL UN-PACK REQUIRED" in DPS remarks.</li>
+                                <li><strong>Partial unpack:</strong> Movers only open boxes in select areas.</li>
+                                <li><strong>Movers assemble furniture</strong> they disassembled at origin (beds, couches, etc.).</li>
+                                <li><strong>If you refuse a full unpack,</strong> the TSP is not obligated to return to remove packing materials.</li>
+                            </ol>
+                            <ul>
+                                <li>Check the Required Delivery Date (RDD) in DPS.</li>
+                                <li>If mold is discovered at ANY point during delivery, HALT DELIVERY. All items must be loaded back onto the truck and inspected at the warehouse.</li>
+                                <li>Use the inventory sheet to check off items as they come off the truck. Annotate any missing items before signing off.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="6" data-item="9">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-6-9"></div>
+                        <input type="checkbox" id="input-6-9">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-6-9">Storage in Transit (SIT)</label>
+                        <div class="item-description">
+                            If you cannot accept delivery, you are authorized 90 days of SIT per JTR 0518. If housing is still unavailable at 90 days, you can request an additional 90 days.
+                            <ul>
+                                <li>SIT can be approved at the origin, destination, or any point in between.</li>
+                                <li>Storage facility must be government-approved.</li>
+                                <li>The 90-day limit is cumulative. You are financially responsible for SIT charges after the time limit expires.</li>
+                            </ul>
+                            Once you can accept HHG, notify your TSP. They must schedule delivery within 7 business days.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="6" data-item="10">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-6-10"></div>
+                        <input type="checkbox" id="input-6-10">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-6-10">Submit a Loss / Damage Report</label>
+                        <div class="item-description">
+                            See <a href="https://www.move.mil/" target="_blank">PPA: The Claims Process</a> for a full explanation of the claims process from start to finish.
+                            <p style="margin-top: 10px;"><strong>Note:</strong> A Loss/Damage Report is different from an actual claim. You will still need to file a claim for lost or damaged items.</p>
+                            Complete DD Form 1840 with your TSP at the time of delivery if any damage is seen at delivery. If any HHG are lost or damaged, you are entitled to full replacement value (FRV).
+                            <ol>
+                                <li>Inspect all items.</li>
+                                <li>Note obvious losses/damages and ask the driver to complete and sign DD Form 1840.</li>
+                                <li>Acknowledge receipt of all high-value items.</li>
+                                <li>Review all inventories and forms before signing.</li>
+                            </ol>
+                            You can also submit a Loss/Damage report AFTER DELIVERY. For shipments picked up on or before May 14, 2026: 9-month filing period. For shipments on or after May 15, 2026: 12-month filing period.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="6" data-item="11">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-6-11"></div>
+                        <input type="checkbox" id="input-6-11">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-6-11">File an itemized claim for Loss / Damage</label>
+                        <div class="item-description">
+                            Log in to <a href="https://dps.move.mil/" target="_blank">DPS</a> to submit a Claim for Loss/Damage. A Loss/Damage Report is NOT a claim — you must submit a separate itemized claim in DPS for every item lost or damaged. Gather before submitting: Manufacturer, brief description, inventory item number, cost at purchase and year, description of damage, proof of value/condition, photos & receipts (if available).
+                            <ul>
+                                <li>For quick reference throughout the process, please refer to the claims fact sheet on PPA.</li>
+                            </ul>
+                            <strong>Note:</strong> For real property damage, you will submit this type of claim directly to the TSP. <strong>Remember:</strong> this is a negotiation. If you are not happy with an offer, you should reject it.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="6" data-item="12">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-6-12"></div>
+                        <input type="checkbox" id="input-6-12">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-6-12">File an Inconvenience Claim</label>
+                        <div class="item-description">
+                            Contact your TSP to file an Inconvenience Claim if HHG are not picked up/delivered by the Required Delivery Date (RDD).
+                        </div>
+                        <div class="item-tip">NEW for 2026: Reimbursement is now 100% of the M&IE per diem rate for the customer. For moves picked up on or after May 15, 2026, all dependents traveling on approved funded relocation orders are also authorized reimbursement at 75% of M&IE.</div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="6" data-item="13">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-6-13"></div>
+                        <input type="checkbox" id="input-6-13">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-6-13">Complete the Customer Satisfaction Survey (CSS)</label>
+                        <div class="item-description">
+                            Complete the CSS for EACH shipment executed during the PCS. The CSS consists of eight questions and allows you to rate your TSP. See <a href="https://www.move.mil/" target="_blank">Fact Sheet</a>. Complete via the link in the automated email you will receive after delivery.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 8: Personally Procured Move (PPM) Guide -->
+        <div class="section">
+            <div class="section-header" id="section-7-header">
+                VIII. Personally Procured Move (PPM) Guide
+                <div class="section-progress">
+                    <div class="section-progress-bar">
+                        <div class="section-progress-fill" id="section-7-fill" style="width: 0%"></div>
+                    </div>
+                    <span id="section-7-count">0/0</span>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-header">Prepping for your PPM</div>
+                <div class="checklist-item" data-section="7" data-item="0">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-7-0"></div>
+                        <input type="checkbox" id="input-7-0">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-7-0">Obtain your required documents</label>
+                        <div class="item-description">
+                            Ensure your move is set up in <a href="https://dps.move.mil/" target="_blank">DPS</a> and all required forms are signed by your assigned counselor. Read the <a href="https://www.move.mil/" target="_blank">PPA Guide to PPMs</a> first!
+                            <ul>
+                                <li>DD1351-2 Travel Voucher (signed by moving counselor)</li>
+                                <li>DD2278 (signed by moving counselor) — Once signed, your PPM is officially approved.</li>
+                            </ul>
+                            <strong>NOTE:</strong> If PCSing to Hawaii, Alaska, or a U.S. territory, you MUST work with PPO for additional guidance.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="7" data-item="1">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-7-1"></div>
+                        <input type="checkbox" id="input-7-1">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-7-1">Decide what type of PPM you will conduct</label>
+                        <div class="item-description">
+                            Self move via: POV, POV with attached trailer (owned or rented), rental truck (e.g., Penske, U-Haul), rental cube (e.g., Pack Rat, U-Haul U-Box, U-Pack ReloCube, PODs, Zippyshell), or rental trailers (e.g., ABF U-Pack, Estes Suremove, OD Household Services).
+                            <p style="margin-top: 10px;"><strong>Commercial move:</strong> You pack; they load, haul, and unload — or they do everything.</p>
+                            <p style="margin-top: 10px;">Compensation is based on your authorized weight. <a href="https://www.move.mil/" target="_blank">Click here</a> to learn more.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="7" data-item="2">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-7-2"></div>
+                        <input type="checkbox" id="input-7-2">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-7-2">Acquire Packing / Moving Materials (if packing yourself)</label>
+                        <div class="item-description">
+                            Decide if you will pack yourself. Options for materials:
+                            <ul>
+                                <li>Obtain boxes from neighbors who recently moved, grocery stores, or purchase from UHaul, Lowe's, Home Depot, etc.</li>
+                                <li>Some companies rent moving blankets.</li>
+                            </ul>
+                            Plan accordingly — it takes much longer than expected to pack a full household. Start as early as possible. Keep receipts for all packing materials. These are "Operating Expenses" — not reimbursed dollar-for-dollar but used to offset PPM tax liability. U-Haul may refund unused boxes if returned.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="7" data-item="3">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-7-3"></div>
+                        <input type="checkbox" id="input-7-3">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-7-3">Reserve your moving method</label>
+                        <div class="item-description">
+                            Reserve rental vehicles, moving company, or loading/unloading crews.
+                            <ul>
+                                <li>If hiring a moving company or crews, ensure they are reputable, licensed, and insured. Check the Better Business Bureau or FMCSA for assistance.</li>
+                            </ul>
+                            Check the <a href="https://www.move.mil/" target="_blank">PPM/Rogue Movers Fact Sheet</a> for helpful information on hiring moving companies and crews.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-header">Loading / In Transit</div>
+                <div class="checklist-item" data-section="7" data-item="4">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-7-4"></div>
+                        <input type="checkbox" id="input-7-4">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-7-4">Ensure your belongings are secure</label>
+                        <div class="item-description">
+                            <ul>
+                                <li>Ensure any and all trailers are locked when moving HHG in transit.</li>
+                                <li>Truck rentals may not include a lock — purchase one if needed.</li>
+                                <li>Check with your Renters Insurance and/or Auto Insurance Company to see if additional coverage is needed during the move.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="7" data-item="5">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-7-5"></div>
+                        <input type="checkbox" id="input-7-5">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-7-5">Weight Tickets</label>
+                        <div class="item-description">
+                            Obtain a certified/legible full weight ticket containing the weigh master's signature and date, along with your full name, rank, and EDIPI.
+                            <ul>
+                                <li><strong>POV:</strong> Full AND empty weight ticket required if hauling any HHG.</li>
+                                <li><strong>Rental (U-Haul, Penske, etc.):</strong> Both empty and full tickets required.</li>
+                                <li><strong>Container cube:</strong> Both empty and full tickets required.</li>
+                                <li><strong>Hired commercial company:</strong> Both empty and full tickets required.</li>
+                                <li><strong>You need a new full weight ticket for each haul</strong> if making multiple trips.</li>
+                            </ul>
+                            <p style="margin-top: 10px;"><strong>NET WEIGHT = HHG ONLY (loaded weight minus empty weight). Crucial for determining reimbursement.</strong></p>
+                            <p style="margin-top: 10px;">You do NOT need full tickets at both origin and destination.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="7" data-item="6">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-7-6"></div>
+                        <input type="checkbox" id="input-7-6">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-7-6">Save all receipts</label>
+                        <div class="item-description">
+                            <ul>
+                                <li>Save contracts that you signed.</li>
+                                <li>Receipts from moving companies and rental vehicles must be submitted with the PPM voucher.</li>
+                                <li>Receipts for Operating Expenses (packing materials, dollies, furniture blankets, etc.) are not required unless a single item is $75 or more — but save them for your Statement of Expenses.</li>
+                            </ul>
+                            <a href="https://www.move.mil/" target="_blank">Find more info here</a>.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="7" data-item="7">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-7-7"></div>
+                        <input type="checkbox" id="input-7-7">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-7-7">Storage in Transit</label>
+                        <div class="item-description">
+                            It is your responsibility to secure any Storage-In-Transit (SIT) if needed.
+                            <ul>
+                                <li>Reimbursement for SIT is limited to 90 days and is limited to the Government Constructed Cost (GCC) for storage at destination.</li>
+                            </ul>
+                            Contact your local Personal Property Office for more information.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-header">Move Complete — Voucher Submission</div>
+                <div class="checklist-item" data-section="7" data-item="8">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-7-8"></div>
+                        <input type="checkbox" id="input-7-8">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-7-8">Organize your documents</label>
+                        <div class="item-description">
+                            Ensure you have received all documents from any contracted companies (receipts, weight tickets properly dated and marked).
+                            <p style="margin-top: 10px;"><strong>Submit your PPM Package:</strong></p>
+                            <ol>
+                                <li>DD Form 2278 — signed by you and the Personal Property Office</li>
+                                <li>Registration for POV and/or trailer</li>
+                                <li>Signed DD Form 1351-2 (Travel Voucher or Subvoucher)</li>
+                                <li>Rental Contract for any trucks, vans, or trailers</li>
+                                <li>Contract for any commercial services (packing, loading)</li>
+                                <li>Weight Tickets</li>
+                                <li>Miscellaneous documents based on service specific requirements</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-section="7" data-item="9">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-custom" id="checkbox-7-9"></div>
+                        <input type="checkbox" id="input-7-9">
+                    </div>
+                    <div class="item-content">
+                        <label class="item-label" for="input-7-9">Submit your voucher</label>
+                        <div class="item-description">
+                            PPM Submissions varies based on branch of service.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sections = 8;
+        const itemsPerSection = [3, 13, 4, 8, 2, 5, 14, 10];
+
+        function initChecklist() {
+            loadProgressFromStorage();
+            updateAllProgress();
+        }
+
+        function getCheckbox(section, item) {
+            return document.getElementById(`input-${section}-${item}`);
+        }
+
+        function getCheckboxDisplay(section, item) {
+            return document.getElementById(`checkbox-${section}-${item}`);
+        }
+
+        function toggleItem(section, item) {
+            const checkbox = getCheckbox(section, item);
+            checkbox.checked = !checkbox.checked;
+            updateItemDisplay(section, item);
+            updateAllProgress();
+            saveProgressToStorage();
+        }
+
+        function updateItemDisplay(section, item) {
+            const checkbox = getCheckbox(section, item);
+            const display = getCheckboxDisplay(section, item);
+            const row = checkbox.closest('.checklist-item');
+
+            if (checkbox.checked) {
+                display.classList.add('checked');
+                display.textContent = '✓';
+                row.classList.add('complete');
+            } else {
+                display.classList.remove('checked');
+                display.textContent = '';
+                row.classList.remove('complete');
+            }
+        }
+
+        function updateAllProgress() {
+            let totalCompleted = 0;
+            let totalItems = 0;
+
+            for (let s = 0; s < sections; s++) {
+                const sectionHeader = document.getElementById(`section-${s}-header`);
+                const sectionFill = document.getElementById(`section-${s}-fill`);
+                const sectionCount = document.getElementById(`section-${s}-count`);
+                
+                let sectionCompleted = 0;
+                const sectionTotal = itemsPerSection[s];
+
+                for (let i = 0; i < sectionTotal; i++) {
+                    const checkbox = getCheckbox(s, i);
+                    if (checkbox && checkbox.checked) {
+                        sectionCompleted++;
+                        totalCompleted++;
+                    }
+                    totalItems++;
+                }
+
+                const sectionPercentage = (sectionCompleted / sectionTotal) * 100;
+                sectionFill.style.width = sectionPercentage + '%';
+                sectionCount.textContent = `${sectionCompleted}/${sectionTotal}`;
+
+                if (sectionCompleted === sectionTotal && sectionTotal > 0) {
+                    sectionHeader.classList.add('complete');
+                } else {
+                    sectionHeader.classList.remove('complete');
+                }
+            }
+
+            const overallPercentage = (totalCompleted / totalItems) * 100;
+            const progressFill = document.getElementById('overallProgress');
+            progressFill.style.width = overallPercentage + '%';
+            progressFill.textContent = totalCompleted > 0 ? `${Math.round(overallPercentage)}%` : '';
+            document.getElementById('progressCount').textContent = `${totalCompleted} of ${totalItems}`;
+        }
+
+        function saveProgressToStorage() {
+            const progress = {};
+            for (let s = 0; s < sections; s++) {
+                progress[s] = [];
+                for (let i = 0; i < itemsPerSection[s]; i++) {
+                    const checkbox = getCheckbox(s, i);
+                    if (checkbox) {
+                        progress[s].push(checkbox.checked);
+                    }
+                }
+            }
+            localStorage.setItem('checklistProgress', JSON.stringify(progress));
+        }
+
+        function loadProgressFromStorage() {
+            const saved = localStorage.getItem('checklistProgress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                for (let s = 0; s < sections; s++) {
+                    if (progress[s]) {
+                        for (let i = 0; i < progress[s].length; i++) {
+                            const checkbox = getCheckbox(s, i);
+                            if (checkbox) {
+                                checkbox.checked = progress[s][i];
+                                updateItemDisplay(s, i);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function resetChecklist() {
+            if (confirm('Are you sure you want to reset all items? This cannot be undone.')) {
+                for (let s = 0; s < sections; s++) {
+                    for (let i = 0; i < itemsPerSection[s]; i++) {
+                        const checkbox = getCheckbox(s, i);
+                        if (checkbox) {
+                            checkbox.checked = false;
+                            updateItemDisplay(s, i);
+                        }
+                    }
+                }
+                localStorage.removeItem('checklistProgress');
+                updateAllProgress();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize
+            initChecklist();
+
+            // Add event listeners to checkboxes and labels
+            for (let s = 0; s < sections; s++) {
+                for (let i = 0; i < itemsPerSection[s]; i++) {
+                    const checkbox = getCheckbox(s, i);
+                    const checkboxDisplay = getCheckboxDisplay(s, i);
+                    const label = document.querySelector(`label[for="input-${s}-${i}"]`);
+                    const itemContent = checkbox ? checkbox.closest('.item-content') : null;
+
+                    if (checkbox) {
+                        checkbox.addEventListener('change', function() {
+                            updateItemDisplay(s, i);
+                            updateAllProgress();
+                            saveProgressToStorage();
+                        });
+                    }
+
+                    if (checkboxDisplay) {
+                        checkboxDisplay.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            toggleItem(s, i);
+                        });
+                    }
+
+                    if (label) {
+                        label.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            toggleItem(s, i);
+                        });
+                    }
+
+                    if (itemContent) {
+                        itemContent.addEventListener('click', function(e) {
+                            if (e.target.tagName !== 'A') {
+                                toggleItem(s, i);
+                            }
+                        });
+                    }
+                }
+            }
+
+            // Reset button
+            document.getElementById('resetBtn').addEventListener('click', resetChecklist);
+        });
+    </script>
+</body>
+</html>
